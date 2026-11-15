@@ -1,0 +1,9 @@
+{
+  "name": "J.A.R.V.I.S. V3",
+  "short_name": "JARVIS",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "description": "Asistente personal JARVIS"
+}

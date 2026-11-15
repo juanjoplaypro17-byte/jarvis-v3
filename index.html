@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="JARVIS — Asistente personal">
+<link rel="manifest" href="manifest.webmanifest">
+<title>J.A.R.V.I.S. V3</title>
+<style>
+:root{color-scheme:dark;--bg:#07111f;--panel:#0d1b2b;--line:#1d3851;--cyan:#75e4ff;--muted:#8ba4b9;--text:#e9f6ff}
+*{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at 50% 18%,#12314b 0,#091827 42%,#050b13 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:850px;min-height:100svh;margin:auto;padding:env(safe-area-inset-top) 18px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column}
+header{height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1b344a;letter-spacing:.16em;font-size:12px}
+.brand{font-weight:750;color:#d9f7ff}.status{font-size:10px;color:#86d9c2;letter-spacing:.12em}
+.hero{display:flex;flex-direction:column;align-items:center;padding:34px 0 24px}
+.core{width:min(58vw,230px);aspect-ratio:1;position:relative;display:grid;place-items:center;filter:drop-shadow(0 0 28px #20bfff44)}
+.ring{position:absolute;border:1px solid #63dfff77;border-radius:50%;inset:3%;animation:spin 22s linear infinite}
+.ring.two{inset:14%;border-style:dashed;animation-direction:reverse;animation-duration:34s}
+.ring.three{inset:27%;border-width:2px;box-shadow:0 0 28px #23b9ff44,inset 0 0 26px #23b9ff22}
+.core:before{content:"";position:absolute;width:39%;height:39%;border-radius:50%;background:radial-gradient(circle,#e5fbff 0,#78e7ff 20%,#168acb 52%,#0b3b60 72%,transparent 74%);box-shadow:0 0 42px #35caff88}
+.core:after{content:"";position:absolute;width:68%;height:68%;border:1px solid #74e8ff55;border-radius:50%;clip-path:polygon(0 0,100% 0,100% 35%,0 35%);animation:spin 9s linear infinite}
+.cross{position:absolute;width:64%;height:64%;border:1px solid #8aeaff55;border-radius:50%}
+.cross:before,.cross:after{content:"";position:absolute;background:#8aeaff66}.cross:before{height:1px;width:130%;left:-15%;top:50%}.cross:after{width:1px;height:130%;top:-15%;left:50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+h1{font-size:25px;letter-spacing:.34em;margin:12px 0 4px;font-weight:650}.sub{font-size:9px;letter-spacing:.25em;color:#8cb6cc}
+.state{margin-top:16px;border:1px solid #28516a;border-radius:99px;padding:8px 14px;font-size:10px;letter-spacing:.12em;color:var(--cyan);background:#0b2031}
+.panel{background:#0b1928dd;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 16px 45px #0003;backdrop-filter:blur(16px)}
+.conversation{height:min(31vh,290px);min-height:150px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:2px}
+.msg{padding:11px 13px;border-radius:13px;line-height:1.5;font-size:14px;max-width:92%;white-space:pre-wrap;overflow-wrap:anywhere}
+.bot{background:#102b40;border:1px solid #204b67;align-self:flex-start}.user{background:#123b52;border:1px solid #28627e;align-self:flex-end}
+.tag{font-size:9px;color:#8bcde2;letter-spacing:.16em;margin-bottom:4px}
+.controls{display:flex;gap:8px;margin-top:12px}.input{min-width:0;flex:1;background:#061321;border:1px solid #294c65;border-radius:12px;color:var(--text);padding:14px;font-size:14px;outline:none}.input:focus{border-color:#5bc9ed}
+button{font:inherit;cursor:pointer}.btn{border:1px solid #4abfe8;background:linear-gradient(135deg,#105071,#087eaa);color:white;border-radius:12px;padding:0 17px;font-weight:650}
+.mic{width:100%;margin-top:9px;padding:13px;border:1px solid #326c86;background:#0b2639;color:#c7f4ff;border-radius:12px;font-weight:650;letter-spacing:.08em}.mic.active{background:#155d70;box-shadow:0 0 20px #37d6ff44}
+.tools{display:flex;justify-content:space-between;align-items:center;margin-top:10px;color:var(--muted);font-size:10px}.clear{border:0;background:transparent;color:#8cb6ca;padding:6px}
+.note{text-align:center;color:#7793a8;font-size:10px;line-height:1.5;margin:10px 5px 0}
+footer{margin-top:auto;text-align:center;padding-top:22px;color:#57758b;font-size:9px;letter-spacing:.13em}
+@media(min-width:650px){.hero{padding:20px 0}.core{width:190px}.conversation{height:260px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><div class="brand">◈ J.A.R.V.I.S.</div><div class="status" id="connection">● INTERFAZ ACTIVA</div></header>
+<section class="hero">
+<div class="core" aria-label="Núcleo de JARVIS"><div class="ring"></div><div class="ring two"></div><div class="ring three"></div><div class="cross"></div></div>
+<h1>JARVIS</h1><div class="sub">PERSONAL INTELLIGENCE SYSTEM</div>
+<div class="state" id="state">EN LÍNEA · MODO LOCAL</div>
+</section>
+<section class="panel">
+<div class="conversation" id="chat" aria-live="polite"></div>
+<div class="controls"><input class="input" id="entry" placeholder="Escribe un mensaje..." autocomplete="off"><button class="btn" id="send">Enviar</button></div>
+<button class="mic" id="mic">🎙 HABLAR CON JARVIS</button>
+<div class="tools"><span id="memory">HISTORIAL LOCAL ACTIVADO</span><button class="clear" id="clear">Borrar conversación</button></div>
+</section>
+<div class="note">V3 · Interfaz instalada en preparación. El motor de IA todavía debe conectarse mediante un servidor seguro.</div>
+<footer>J.A.R.V.I.S. V3 · TABLET EDITION</footer>
+</main>
+<script>
+const chat=document.getElementById('chat'),entry=document.getElementById('entry'),state=document.getElementById('state'),mic=document.getElementById('mic');
+const KEY='jarvis_v3_history';
+let history=[];
+function add(text,who,save=true){const el=document.createElement('div');el.className='msg '+(who==='user'?'user':'bot');if(who!=='user'){const tag=document.createElement('div');tag.className='tag';tag.textContent='JARVIS';el.appendChild(tag)}el.appendChild(document.createTextNode(text));chat.appendChild(el);chat.scrollTop=chat.scrollHeight;if(save){history.push({text,who});localStorage.setItem(KEY,JSON.stringify(history.slice(-80)))}}
+function localReply(q){const s=q.toLowerCase();if(/hola|buenas|buenos días|buenas noches/.test(s))return 'Saludos. Interfaz V3 operativa. Mi conexión al motor de inteligencia artificial está pendiente.';if(/quién eres|quien eres|tu nombre/.test(s))return 'Soy JARVIS, tu asistente personal. Esta versión ya conserva el historial local; el cerebro de IA será el siguiente módulo.';if(/hora|fecha/.test(s))return 'La fecha y hora de tu dispositivo son: '+new Date().toLocaleString('es-CO')+'.';if(/estado/.test(s))return 'Interfaz activa. Historial local disponible. Motor de IA aún no conectado.';if(/gracias/.test(s))return 'A tu servicio.';return 'He recibido tu mensaje. Todavía estoy en modo local; conectaremos un modelo de IA real en el siguiente paso.'}
+function speak(t){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='es-CO';u.rate=.94;u.pitch=.88;const voices=speechSynthesis.getVoices();const v=voices.find(x=>/^es/i.test(x.lang)&&/male|masculino|andrés|jorge|diego/i.test(x.name))||voices.find(x=>/^es/i.test(x.lang));if(v)u.voice=v;state.textContent='JARVIS · RESPONDIENDO';u.onend=()=>state.textContent='EN LÍNEA · MODO LOCAL';speechSynthesis.speak(u)}
+function send(text){const q=(text||entry.value).trim();if(!q)return;add(q,'user');entry.value='';state.textContent='PROCESANDO';setTimeout(()=>{const a=localReply(q);add(a,'bot');speak(a);if(!('speechSynthesis'in window))state.textContent='EN LÍNEA · MODO LOCAL'},250)}
+document.getElementById('send').addEventListener('click',()=>send());entry.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+document.getElementById('clear').addEventListener('click',()=>{history=[];localStorage.removeItem(KEY);chat.innerHTML='';add('Conversación reiniciada. Estoy listo.','bot')});
+try{history=JSON.parse(localStorage.getItem(KEY)||'[]');history.forEach(m=>add(m.text,m.who,false))}catch(e){history=[]}
+if(!history.length)add('Buenas. JARVIS V3 está iniciado. La interfaz y el historial local están activos; el motor de IA se conectará en el siguiente módulo.','bot');
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+if(SR){rec=new SR();rec.lang='es-CO';rec.interimResults=false;rec.maxAlternatives=1;rec.onstart=()=>{mic.classList.add('active');mic.textContent='● ESCUCHANDO...';state.textContent='ESCUCHANDO'};rec.onresult=e=>send(e.results[0][0].transcript);rec.onerror=e=>{state.textContent='MICRÓFONO · '+e.error};rec.onend=()=>{mic.classList.remove('active');mic.textContent='🎙 HABLAR CON JARVIS';if(state.textContent==='ESCUCHANDO')state.textContent='EN LÍNEA · MODO LOCAL'}}
+mic.addEventListener('click',()=>{if(!rec){state.textContent='VOZ NO DISPONIBLE';return}try{rec.start()}catch(e){state.textContent='MICRÓFONO OCUPADO'}});
+if('speechSynthesis'in window)speechSynthesis.getVoices();
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
